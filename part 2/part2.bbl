@@ -1,0 +1,34 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Smith et~al.(2013)]{AmandaK2013}
+Amanda~K. Smith et~al.
+\newblock Time to initiation of breastfeeding and neonatal mortality and
+  morbidity: a systematic review.
+\newblock \emph{BMC Public Health}, 13:\penalty0 19, 2013.
+\newblock \doi{10.1186/1471-2458-13-19}.
+\newblock URL \url{https://pubmed.ncbi.nlm.nih.gov/24564770/}.
+
+\bibitem[Smith et~al.(2017)Smith, Hurt, Chowdhury, Sinha, Fawzi, and
+  Edmond]{EmilyR2015}
+Emily~R. Smith, Lisa Hurt, Ranadip Chowdhury, Bireshwar Sinha, Wafaie Fawzi,
+  and Karen~M. Edmond.
+\newblock Delayed breastfeeding initiation and infant survival: A systematic
+  review and meta-analysis.
+\newblock \emph{PLoS One}, 12\penalty0 (7):\penalty0 e0180722, 2017.
+\newblock \doi{10.1371/journal.pone.0180722}.
+\newblock URL \url{https://pubmed.ncbi.nlm.nih.gov/28746353/}.
+
+\bibitem[{World Health Organization}(2021)]{who2021}
+{World Health Organization}.
+\newblock Infant and young child feeding.
+\newblock WHO Fact Sheet, 2021.
+\newblock URL
+  \url{https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding}.
+\newblock Accessed: 2024.
+
+\end{thebibliography}
