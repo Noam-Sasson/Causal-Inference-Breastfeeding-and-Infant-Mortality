@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.7.29)  13 AUG 2025 19:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.7.29)  25 AUG 2025 19:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/proj/matched-multiple-birth-fetal-death-2016-2020/part 2/part2.tex"
-(c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/proj/matched-multiple-birth-fetal-death-2016-2020/part 2/part2.tex
+**"c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/project_git_repo/Causal-Inference-Breastfeeding-and-Infant-Mortality/part 2/part2.tex"
+(c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/project_git_repo/Causal-Inference-Breastfeeding-and-Infant-Mortality/part 2/part2.tex
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-05-27>
 (C:\Users\Lenovo\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
@@ -497,14 +497,14 @@ Package rerunfilecheck Info: File `part2.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  11048 strings out of 473904
- 171455 string characters out of 5726128
+ 171645 string characters out of 5726128
  1949908 words of memory out of 5000000
  33739 multiletter control sequences out of 15000+600000
  569234 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,10n,79p,859b,594s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,10n,79p,878b,594s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Lenovo\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on part2.pdf (6 pages, 247318 bytes).
+Output written on part2.pdf (6 pages, 247317 bytes).
 PDF statistics:
  139 PDF objects out of 1000 (max. 8388607)
  27 named destinations out of 1000 (max. 500000)

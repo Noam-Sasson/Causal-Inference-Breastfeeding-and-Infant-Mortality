@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex part2"] 1755101976.21607 "part2.aux" "part2.bbl" "part2" 1755103814.17665 0
+["bibtex part2"] 1755101976.21607 "part2.aux" "part2.bbl" "part2" 1756139997.09951 0
   "./references.bib" 1755097916 1167 9f12d860480695b3dd1a79ddf39c5dfb ""
   "C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/bibtex/bst/natbib/plainnat.bst" 1284455456 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "part2.aux" 1755103812 1554 3a825230e89b6c78a2d8b09db4cd73c5 "pdflatex"
+  "part2.aux" 1756139995 1554 3a825230e89b6c78a2d8b09db4cd73c5 "pdflatex"
   (generated)
   "part2.bbl"
   "part2.blg"
   (rewritten before read)
-["pdflatex"] 1755103811.29788 "c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/proj/matched-multiple-birth-fetal-death-2016-2020/part 2/part2.tex" "part2.pdf" "part2" 1755103814.17763 0
+["pdflatex"] 1756139992.34011 "c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/project_git_repo/Causal-Inference-Breastfeeding-and-Infant-Mortality/part 2/part2.tex" "part2.pdf" "part2" 1756139997.10132 0
   "C:/Users/Lenovo/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1754574496 82705 9cc9f144eacd499bc23a611703921467 ""
   "C:/Users/Lenovo/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1733056418 14064 fe514fc4686616fe2650eef27f02354d ""
   "C:/Users/Lenovo/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1722282133 24265189 42d29ae32dd862838056fb49685e8934 ""
@@ -107,11 +107,11 @@
   "C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty" 1718356376 14067 1383bd6ee23ab18ae0e796155404deb7 ""
   "C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Lenovo/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/proj/matched-multiple-birth-fetal-death-2016-2020/part 2/part2.tex" 1755103810 19226 b2f99b8b56e105cea6e2e256c03c9426 ""
+  "c:/Users/Lenovo/Documents/Technion/semester 8/causal inference/project_git_repo/Causal-Inference-Breastfeeding-and-Infant-Mortality/part 2/part2.tex" 1755103810 19226 b2f99b8b56e105cea6e2e256c03c9426 ""
   "causal_graph.jpg" 1755023864 79808 9c798cc2f9aa36d87a9a43d40247a447 ""
-  "part2.aux" 1755103812 1554 3a825230e89b6c78a2d8b09db4cd73c5 "pdflatex"
+  "part2.aux" 1756139995 1554 3a825230e89b6c78a2d8b09db4cd73c5 "pdflatex"
   "part2.bbl" 1755101976 1406 06f0c0c3631f8466cd1dfabed25ccd1d "bibtex part2"
-  "part2.out" 1755103812 987 975042466d14f364e84de1dd2c07dcc0 "pdflatex"
+  "part2.out" 1756139995 987 975042466d14f364e84de1dd2c07dcc0 "pdflatex"
   "part2.tex" 1755103810 19226 b2f99b8b56e105cea6e2e256c03c9426 ""
   (generated)
   "part2.aux"
