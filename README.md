@@ -1,1 +1,1 @@
-# Causal-Inference-Breastfeeding-and-Infant-Mortality
+# Causal Inference Breastfeeding and Infant Mortality
