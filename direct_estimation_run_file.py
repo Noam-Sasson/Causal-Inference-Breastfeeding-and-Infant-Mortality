@@ -80,7 +80,7 @@ def weighted_calibration_curve(y_prob, y_true, sample_weights=None, n_bins=10, t
     plt.title("Weighted Calibration Curve" if title == "" else f"Weighted Calibration Curve - {title}")
     plt.legend()
     plt.grid()
-    plt.show()
+    # plt.show()
 
     # save fig to file
     plt.savefig(f"{save_folder}/weighted_calibration_curve_{title}.png")
@@ -133,7 +133,7 @@ def eval_propensity_model(fitted_model, X_val, T_val, T_train, use_sample_weight
         plt.title(f'Calibration Curve')
         plt.legend()
         plt.grid()
-        plt.show()
+        # plt.show()
         # save fig to file
         plt.savefig(f"{save_folder}/calibration_curve_{title}.png")
     else:
@@ -250,7 +250,7 @@ def check_overlap_and_get_trimming_points(propensity_model, X_train, T_train, lo
     plt.title('Propensity Score Distribution by Treatment Group' if model_name == "" else f'Propensity Score Distribution by Treatment Group ({model_name})')
     plt.legend()
     plt.grid()
-    plt.show()
+    # plt.show()
 
     if save_folder:
         plt.savefig(f"{save_folder}/propensity_score_distribution_{model_name}.png")
@@ -533,6 +533,9 @@ def s_learner_confidence_intervals(s_learner_model, X_train, y_train, X_val, y_v
 def plot_bootstrap_estimates(bootstrap_estimates_list, titles, dot_color = "red", ci=95, save_folder=None, model_name=""):
     plt.figure(figsize=(10, 6))
 
+    # Add horizontal black line at 0
+    plt.axhline(0, color="black", linestyle="--", linewidth=1)
+
     for i, res in enumerate(bootstrap_estimates_list, start=1):
         mean_est = np.mean(res)
         lower = np.percentile(res, (100 - ci) / 2)
@@ -562,10 +565,44 @@ def plot_bootstrap_estimates(bootstrap_estimates_list, titles, dot_color = "red"
     plt.xticks(range(1, len(bootstrap_estimates_list) + 1), 
                titles)
     plt.grid(True, axis="y")
-    plt.show()
+    # plt.show()
 
     if save_folder:
         plt.savefig(f"{save_folder}/bootstrap_estimates_{model_name}.png")
+
+def plot_bootstrap_estimates_boxplot(bootstrap_estimates_list, titles, box_color="lightblue", show_mean=True, save_folder=None, model_name=""):
+    plt.figure(figsize=(10, 6))
+
+    # Add horizontal black line at 0
+    plt.axhline(0, color="black", linestyle="--", linewidth=1)
+
+    # Classic boxplot with whiskers
+    box = plt.boxplot(
+        bootstrap_estimates_list,
+        labels=titles,
+        patch_artist=True,
+        notch=False,
+        showfliers=True,  # set False if you want to hide outliers
+        boxprops=dict(facecolor=box_color, color="black"),
+        medianprops=dict(color="black"),
+        whiskerprops=dict(color="black"),
+        capprops=dict(color="black"),
+        flierprops=dict(marker="o", color="gray", alpha=0.5)
+    )
+
+    # # Optionally add mean values as red dots with labels
+    # if show_mean:
+    #     for i, res in enumerate(bootstrap_estimates_list, start=1):
+    #         mean_est = np.mean(res)
+    #         plt.plot(i, mean_est, "o", color=dot_color)
+    #         plt.text(i + 0.1, mean_est, f"{mean_est:.2f}", va="center", fontsize=9, color=dot_color)
+
+    plt.title("Bootstrap Estimates (Boxplot with Whiskers)")
+    plt.ylabel("ATE Estimate")
+    plt.grid(True, axis="y")
+
+    if save_folder:
+        plt.savefig(f"{save_folder}/bootstrap_estimates_boxplot_{model_name}.png")
 
 def save_bootstrap_reses_to_json(bootstrap_reses, filename, save_folder):
     bootstrap_reses_to_json = dict()
@@ -782,10 +819,10 @@ def dr_estimator(row, potential_outcome):
     else:
         return estimated_outcome
 
-def bootstrap_confidence_interval_dr_t_learner(t_learner_outcome_model1, t_learner_outcome_model0, X_train, y_train, X_val, y_val, propensity_model, confounders):
+def bootstrap_confidence_interval_dr_t_learner(t_learner_outcome_model1, t_learner_outcome_model0, X_train, y_train, X_val, y_val, propensity_model, confounders, sample_size=10000, sample_num=20):
     np.random.seed(2025)
-    bootstrap_sample_size = 10000
-    bootstrap_sample_num = 20
+    bootstrap_sample_size = sample_size
+    bootstrap_sample_num = sample_num
     alpha = 0.05
     test_data  = pd.concat([X_val, y_val], axis=1)
     t_learner_model_train_data = deepcopy(X_train) # notice that T is not included in learning
@@ -836,21 +873,22 @@ def bootstrap_confidence_interval_dr_t_learner(t_learner_outcome_model1, t_learn
 
     return dr_ci, ate_estimates
 
-def bootstrap_confidence_interval_dr_s_learner(s_learner_model, X_train, y_train, X_val, y_val, propensity_model, confounders):
-    np.random.seed(2025)
-    bootstrap_sample_size = 1000
+def bootstrap_confidence_interval_dr_s_learner(s_learner_model, X_train, y_train, X_val, y_val, propensity_model, confounders, sample_size=10000, sample_num=20):
+    np.random.seed(42)
+    bootstrap_sample_size = sample_size
+    bootstrap_sample_num = sample_num
     alpha = 0.05
     test_data  = pd.concat([X_val, y_val], axis=1)
     s_learner_model_train_data = deepcopy(X_train) # notice that T is not included in learning
     ate_estimates = []
     # Bootstrap sampling and model fitting
-    for i in range(bootstrap_sample_size):
+    for i in range(bootstrap_sample_num):
         s_learner_model = s_learner_model.get_model_no_train()
         old_params = propensity_model.get_params()
         IPW_model = LogisticRegression(**old_params) # best previously found propensity model
         # Generate bootstrap indices
         bootstrap_indices = np.random.choice(s_learner_model_train_data.index,
-                                            size=s_learner_model_train_data.shape[0],
+                                            size=bootstrap_sample_size,
                                             replace=True)
         # Create the bootstrap sample using the indices
         X_train_resampled = s_learner_model_train_data.loc[bootstrap_indices]
@@ -903,6 +941,15 @@ def run_function(data_path, save_folder):
     # ------ Propensity Model ----------
     X_train, X_val, T_train, T_val, y_train, y_val = train_test_split(X, T, y, test_size=0.3, random_state=RANDOM_SEED)
 
+    # scale data
+    scaler = StandardScaler()
+
+    X_train_scaled_features = scaler.fit_transform(X_train.values)
+    X_train= pd.DataFrame(X_train_scaled_features, index=X_train.index, columns=X_train.columns)
+
+    X_val_scaled_features = scaler.transform(X_val.values)
+    X_val = pd.DataFrame(X_val_scaled_features, index=X_val.index, columns=X_val.columns)
+
     # model 1: Logistic Regression - No Class Weights
     logist_reg_without_class_weights = create_logistic_regression(X_train, T_train, None)
     propensity_model_reg = train_propensity_model(logist_reg_without_class_weights, X_train, T_train)
@@ -919,19 +966,20 @@ def run_function(data_path, save_folder):
     eval_propensity_model(propensity_model_reg_with_weights, X_val, T_val, T_train, title="Weighted Logistic Regression", use_sample_weights=False, save_folder=save_folder)
     eval_propensity_model(propensity_model_reg_with_weights, X_val, T_val, T_train, title="Weighted Logistic Regression", use_sample_weights=True, save_folder=save_folder)
 
-    # # model 3: Neural Network
-    # nn_model = create_neural_network(X_train, T_train)
-    # propensity_model_nn = train_propensity_model(nn_model, X_train, T_train)
-    # eval_propensity_model(propensity_model_nn, X_val, T_val)
+    # model 3: Neural Network
+    nn_model = create_neural_network(X_train, T_train)
+    propensity_model_nn = train_propensity_model(nn_model, X_train, T_train)
+    eval_propensity_model(propensity_model_nn, X_val, T_val, T_train, title="Neural Network", use_sample_weights=False, save_folder=save_folder)
+    eval_propensity_model(propensity_model_nn, X_val, T_val, T_train, title="Neural Network", use_sample_weights=True, save_folder=save_folder)
 
     max_point, min_point = check_overlap_and_get_trimming_points(propensity_model_reg, X_val, T_val, 0.05, 98, model_name="Unweighted LR", save_folder=save_folder)
     max_point_weighted, min_point_weighted = check_overlap_and_get_trimming_points(propensity_model_reg_with_weights, X_val, T_val, 0.05, 98, model_name="Weighted LR", save_folder=save_folder)
 
-    chosen_propensity_model = propensity_model_reg_with_weights
+    chosen_propensity_model = propensity_model_reg
 
     T_train_prop = chosen_propensity_model.predict_proba(X_train)[:, 1]
 
-    mask_train = (T_train_prop > min_point_weighted) & (T_train_prop < max_point_weighted)
+    mask_train = (T_train_prop > min_point) & (T_train_prop < max_point)
     X_train_trimmed = X_train[mask_train]
     T_train_trimmed = T_train[mask_train]
     y_train_trimmed = y_train[mask_train]
@@ -941,7 +989,7 @@ def run_function(data_path, save_folder):
     print("number of examples in train after trimming:", X_train_trimmed.shape[0])
 
     T_val_prop = chosen_propensity_model.predict_proba(X_val)[:, 1]
-    mask_val = (T_val_prop > min_point_weighted) & (T_val_prop < max_point_weighted)
+    mask_val = (T_val_prop > min_point) & (T_val_prop < max_point)
     X_val_trimmed = X_val[mask_val]
     T_val_trimmed = T_val[mask_val]
     y_val_trimmed = y_val[mask_val]
@@ -955,11 +1003,11 @@ def run_function(data_path, save_folder):
 
     # X_train_trimmed_scaled_features = scaler.fit_transform(X_train_trimmed, inplace=False).values
     # X_train_trimmed = pd.DataFrame(X_train_trimmed_scaled_features, index=X_train_trimmed.index, columns=X_train_trimmed.columns)
-    # X_train_trimmed['T'] = T_train_trimmed
+    X_train_trimmed['T'] = T_train_trimmed
 
     # X_val_trimmed_scaled_features = scaler.transform(X_val_trimmed, inplace=False).values
     # X_val_trimmed = pd.DataFrame(X_val_trimmed_scaled_features, index=X_val_trimmed.index, columns=X_val_trimmed.columns)
-    # X_val_trimmed['T'] = T_val_trimmed
+    X_val_trimmed['T'] = T_val_trimmed
 
     # # get label distribution after trimming
     # X_inference_trimmed_temp = pd.concat([X_train_trimmed, X_val_trimmed], axis = 0)
@@ -991,7 +1039,7 @@ def run_function(data_path, save_folder):
     plt.xlabel('Class Weights')
     plt.ylabel('Density')
     plt.title('Distribution of Class Weights for Inverse Propensity Weighting')
-    plt.show()
+    # plt.show()
 
     if save_folder:
         plt.savefig(f"{save_folder}/class_weights_distribution.png")
@@ -1028,7 +1076,7 @@ def run_function(data_path, save_folder):
                 
             logist_reg_model = LogisticRegressionModel(model_params)
 
-            print(len(X_train_trimmed), len(y_train_trimmed), len(sample_weights))
+            # print(len(X_train_trimmed), len(y_train_trimmed), len(sample_weights))
             logist_reg_model.fit(X_train_trimmed, y_train_trimmed, sample_weights=sample_weights)
             results_dict_logist_reg = logist_reg_model.evaluate_model(X_val_trimmed, y_val_trimmed)
             print(f"Model with C={c}, penalty={p} - Accuracy: {results_dict_logist_reg['accuracy']}, F1 Score: {results_dict_logist_reg['f1_score']}")
@@ -1063,7 +1111,7 @@ def run_function(data_path, save_folder):
     plt.xlabel('Sample Weight')
     plt.ylabel('Frequency')
     plt.grid()
-    plt.show()
+    # plt.show()
 
     if save_folder:
         plt.savefig(f"{save_folder}/sample_weights_distribution_rf.png")
@@ -1136,7 +1184,7 @@ def run_function(data_path, save_folder):
         "nn": s_learner_confidence_intervals(dummy_nn_model, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed),
     }
 
-    plot_bootstrap_estimates([v[1] for v in bootstrap_reses_s_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], save_folder=save_folder, model_name="S-Learner")
+    plot_bootstrap_estimates_boxplot([v[1] for v in bootstrap_reses_s_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], save_folder=save_folder, model_name="S-Learner", box_color="lightblue")
     save_bootstrap_reses_to_json(bootstrap_reses_s_learner, "bootstrap_reses_s_learner.json", save_folder=save_folder)
 
     # ------ T-learner ------
@@ -1171,7 +1219,7 @@ def run_function(data_path, save_folder):
     "nn": bootstrap_confidence_interval_t_learner(nn_model_1, nn_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed),
     }
 
-    plot_bootstrap_estimates([v[1] for v in bootstrap_reses_t_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], dot_color = "blue", save_folder=save_folder, model_name="T-Learner")
+    plot_bootstrap_estimates_boxplot([v[1] for v in bootstrap_reses_t_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], save_folder=save_folder, model_name="T-Learner", box_color="orange")
     save_bootstrap_reses_to_json(bootstrap_reses_t_learner, "bootstrap_reses_t_learner.json", save_folder=save_folder)
 
     # ------ IPW ------
@@ -1181,39 +1229,40 @@ def run_function(data_path, save_folder):
     y1_weighted_estimate = np.sum(((temp_test_data['T'] == 1).astype(int) * y_inference_trimmed) / temp_test_data['propensity']) / np.sum(temp_test_data['T'] == 1)
     y0_weighted_estimate = np.sum(((temp_test_data['T'] == 0).astype(int) * y_inference_trimmed) / (1 - temp_test_data['propensity'])) / np.sum(temp_test_data['T'] == 0)
     print(f"Estimated ATE (IPW): {y1_weighted_estimate - y0_weighted_estimate}")
-    plot_bootstrap_estimates([v[1] for v in bootstrap_reses_ipw.values()], ['Logistic Regression IPW'], dot_color = "green", save_folder=save_folder, model_name="IPW")
+    plot_bootstrap_estimates_boxplot([v[1] for v in bootstrap_reses_ipw.values()], ['Logistic Regression IPW'], save_folder=save_folder, model_name="IPW", box_color="lightgreen")
     save_bootstrap_reses_to_json(bootstrap_reses_ipw, "bootstrap_reses_ipw.json", save_folder=save_folder)
 
     # ------ DR-Learner ------
 
     # T-learner
     results_dict_dr_t_learner = {
-    "logist_reg": bootstrap_confidence_interval_dr_t_learner(logist_reg_model_1, logist_reg_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
-    "rand_forest": bootstrap_confidence_interval_dr_t_learner(rand_forest_model_1, rand_forest_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
-    "nn": bootstrap_confidence_interval_dr_t_learner(nn_model_1, nn_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
+    "logist_reg": bootstrap_confidence_interval_dr_t_learner(logist_reg_model_1, logist_reg_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=X_train_trimmed.shape[0], sample_num=20),
+    "rand_forest": bootstrap_confidence_interval_dr_t_learner(rand_forest_model_1, rand_forest_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=X_train_trimmed.shape[0], sample_num=20),
+    "nn": bootstrap_confidence_interval_dr_t_learner(nn_model_1, nn_model_0, X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=10000, sample_num=2),
     }
 
-    plot_bootstrap_estimates([v[1] for v in results_dict_dr_t_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], dot_color = "orange", save_folder=save_folder, model_name="DR-T-Learner")
-    save_bootstrap_reses_to_json(results_dict_dr_t_learner, "bootstrap_reses_dr_t_learner.json")
-    
+    plot_bootstrap_estimates_boxplot([v[1] for v in results_dict_dr_t_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], save_folder=save_folder, model_name="DR-T-Learner", box_color="mediumorchid")
+    save_bootstrap_reses_to_json(results_dict_dr_t_learner, "bootstrap_reses_dr_t_learner.json", save_folder=save_folder)
+
     # S-learner
     results_dict_dr_s_learner = {
-    "logist_reg": bootstrap_confidence_interval_dr_s_learner(best_model_logist_reg.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
-    "rand_forest": bootstrap_confidence_interval_dr_s_learner(best_model_rand_forest.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
-    "nn": bootstrap_confidence_interval_dr_s_learner(best_model_nn.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders),
+    "logist_reg": bootstrap_confidence_interval_dr_s_learner(best_model_logist_reg.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=X_train_trimmed.shape[0], sample_num=20),
+    "rand_forest": bootstrap_confidence_interval_dr_s_learner(best_model_rand_forest.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=X_train_trimmed.shape[0], sample_num=20),
+    "nn": bootstrap_confidence_interval_dr_s_learner(best_model_nn.get_model_no_train(), X_train_trimmed, y_train_trimmed, X_val_trimmed, y_val_trimmed, chosen_propensity_model, confounders, sample_size=10000, sample_num=2),
     }
 
-    plot_bootstrap_estimates([v[1] for v in results_dict_dr_s_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], dot_color = "yellow", save_folder=save_folder, model_name="DR-S-Learner")
-    save_bootstrap_reses_to_json(results_dict_dr_s_learner, "bootstrap_reses_dr_s_learner.json")
+    plot_bootstrap_estimates_boxplot([v[1] for v in results_dict_dr_s_learner.values()], ['Logistic Regression', 'Random Forest', 'Neural Network'], save_folder=save_folder, model_name="DR-S-Learner", box_color="gold")
+    save_bootstrap_reses_to_json(results_dict_dr_s_learner, "bootstrap_reses_dr_s_learner.json", save_folder=save_folder)
 
 if __name__ == "__main__":
     runs_list = [
-        {"data_path" : "data\sampled_infant_mortality_data_imputed_m1.csv", "save_folder": "reses\direct estimation reses m1"},
-        {"data_path" : "data\sampled_infant_mortality_data_imputed_m2.csv", "save_folder": "reses\direct estimation reses m2"},
-        {"data_path" : "data\sampled_infant_mortality_data_imputed_m3.csv", "save_folder": "reses\direct estimation reses m3"},
+        {"data_path" : "data/sampled_infant_mortality_data_imputed_m1.csv", "save_folder": "reses/direct estimation reses m1"},
+        {"data_path" : "data/sampled_infant_mortality_data_imputed_m2.csv", "save_folder": "reses/direct estimation reses m2"},
+        {"data_path" : "data/sampled_infant_mortality_data_imputed_m3.csv", "save_folder": "reses/direct estimation reses m3"},
     ]
 
     for run in runs_list:
+        print(f"Running for data: {run['data_path']}, saving results to: {run['save_folder']}")
         data_path = run["data_path"]
         save_folder = run["save_folder"]
         run_function(data_path, save_folder)
